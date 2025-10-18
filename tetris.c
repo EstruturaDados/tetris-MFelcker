@@ -1,56 +1,91 @@
 #include <stdio.h>
 
-// Desafio Tetris Stack
-// Tema 3 - Integração de Fila e Pilha
-// Este código inicial serve como base para o desenvolvimento do sistema de controle de peças.
-// Use as instruções de cada nível para desenvolver o desafio.
+typedef struct {
+    char tipo; // I, O, T, L
+    int id;    // Único
+} Peca;
+
+#define MAX 5
+
+typedef struct {
+    Peca pecas [MAX];
+    int inicio;
+    int fim;
+    int total;
+} Fila;
+
+void inicializaFila(Fila* f) {
+    f->inicio = 0;
+    f->fim = -1;
+    f->total = 0;
+}
+
+int filaVazia(Fila* f) {
+    return (f->total == 0);
+}
+
+int filaCheia(Fila* f) {
+    return (f->total == MAX);
+}
+
+void inserir(Fila* f, Peca p) {
+    if (filaCheia(f)) {
+        printf("Fila cheia! Não é possível inserir nova peça.\n");
+        return;
+    }
+    f->pecas[f->fim] = p;
+    f->fim = (f->fim + 1) % MAX;
+    f->total++;
+    printf("Peça inserida: Tipo %c, ID %d\n", p.tipo, p.id);
+}
+
+void remover(Fila *f, Peca *p) {
+    if (filaVazia(f)) {
+        printf("Fila vazia! Não é possível remover peça.\n");
+        return;
+    }
+    *p = f->pecas[f->inicio];
+    f->inicio = (f->inicio + 1) % MAX;
+    f->total--;
+    printf("Peça removida: Tipo %c, ID %d\n", p->tipo, p->id);
+}
+
+void mostrarFila(Fila* f) {
+    if (filaVazia(f)) {
+        printf("Fila vazia!\n");
+        return;
+    }
+    printf("Peças na fila:\n");
+    for (int i = 0; i < f->total; i++) {
+        int index = (f->inicio + i) % MAX;
+        printf("Tipo: %c, ID: %d\n", f->pecas[index].tipo, f->pecas[index].id);
+    }
+}
 
 int main() {
 
-    // 🧩 Nível Novato: Fila de Peças Futuras
-    //
-    // - Crie uma struct Peca com os campos: tipo (char) e id (int).
-    // - Implemente uma fila circular com capacidade para 5 peças.
-    // - Crie funções como inicializarFila(), enqueue(), dequeue(), filaCheia(), filaVazia().
-    // - Cada peça deve ser gerada automaticamente com um tipo aleatório e id sequencial.
-    // - Exiba a fila após cada ação com uma função mostrarFila().
-    // - Use um menu com opções como:
-    //      1 - Jogar peça (remover da frente)
-    //      0 - Sair
-    // - A cada remoção, insira uma nova peça ao final da fila.
+    Fila f;
+    inicializaFila(&f);
 
+    Peca p1 = {'I', 1};
+    Peca p2 = {'O', 2};
+    Peca p3 = {'T', 3};
+    Peca p4 = {'L', 4};
+    Peca p5 = {'I', 5};
+    inserir(&f, p1);
+    inserir(&f, p2);
+    inserir(&f, p3);
+    inserir(&f, p4);
+    inserir(&f, p5);
 
+    mostrarFila(&f);
 
-    // 🧠 Nível Aventureiro: Adição da Pilha de Reserva
-    //
-    // - Implemente uma pilha linear com capacidade para 3 peças.
-    // - Crie funções como inicializarPilha(), push(), pop(), pilhaCheia(), pilhaVazia().
-    // - Permita enviar uma peça da fila para a pilha (reserva).
-    // - Crie um menu com opção:
-    //      2 - Enviar peça da fila para a reserva (pilha)
-    //      3 - Usar peça da reserva (remover do topo da pilha)
-    // - Exiba a pilha junto com a fila após cada ação com mostrarPilha().
-    // - Mantenha a fila sempre com 5 peças (repondo com gerarPeca()).
+    Peca removida;
+    remover(&f, &removida);
+    printf("Peça removida: Tipo %c, ID %d", removida.tipo, removida.id);
 
-
-    // 🔄 Nível Mestre: Integração Estratégica entre Fila e Pilha
-    //
-    // - Implemente interações avançadas entre as estruturas:
-    //      4 - Trocar a peça da frente da fila com o topo da pilha
-    //      5 - Trocar os 3 primeiros da fila com as 3 peças da pilha
-    // - Para a opção 4:
-    //      Verifique se a fila não está vazia e a pilha tem ao menos 1 peça.
-    //      Troque os elementos diretamente nos arrays.
-    // - Para a opção 5:
-    //      Verifique se a pilha tem exatamente 3 peças e a fila ao menos 3.
-    //      Use a lógica de índice circular para acessar os primeiros da fila.
-    // - Sempre valide as condições antes da troca e informe mensagens claras ao usuário.
-    // - Use funções auxiliares, se quiser, para modularizar a lógica de troca.
-    // - O menu deve ficar assim:
-    //      4 - Trocar peça da frente com topo da pilha
-    //      5 - Trocar 3 primeiros da fila com os 3 da pilha
-
+    mostrarFila(&f);
 
     return 0;
-}
 
+}
